@@ -1,0 +1,249 @@
+{%- if settings.cart_type == 'drawer' -%}
+  <div id="CartDrawer" class="drawer drawer--right{% if cart.item_count == 0 %} is-empty{% endif %}">
+    <form id="CartDrawerForm" action="{{ routes.cart_url }}" method="post" novalidate class="drawer__contents" data-location="cart-drawer">
+      <div class="drawer__fixed-header">
+        <div class="drawer__header appear-animation appear-delay-1">
+          <div class="h2 drawer__title">{{ 'cart.general.title' | t }}</div>
+          <div class="drawer__close">
+            <button type="button" class="drawer__close-button js-drawer-close">
+              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 64 64"><title>icon-X</title><path d="m19 17.61 27.12 27.13m0-27.12L19 44.74"/></svg>
+              <span class="icon__fallback-text">{{ 'cart.general.close_cart' | t }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%}
+        Kortingsvoortgang.
+        Trappen aanpassen doe je op de regel hieronder: 'aantal:procent',
+        gescheiden door een |. Meer of minder trappen mag; de balk verdeelt
+        zichzelf en de teksten volgen vanzelf.
+      {%- endcomment -%}
+      {%- assign discount_tiers = '2:10|3:15|4:20' -%}
+
+      <div
+        class="cart-drawer__progress"
+        data-cart-progress
+        data-tiers="{{ discount_tiers }}"
+        data-count="{{ cart.item_count }}">
+        <p class="cart-drawer__progress-message" data-cart-progress-message></p>
+        <div class="cart-drawer__progress-track" data-cart-progress-track>
+          <span class="cart-drawer__progress-fill" data-cart-progress-fill></span>
+        </div>
+        <div class="cart-drawer__progress-labels" data-cart-progress-labels></div>
+      </div>
+
+      <div class="drawer__inner">
+        <div class="drawer__scrollable">
+          <div data-products class="appear-animation appear-delay-2"></div>
+
+          {% if settings.cart_notes_enable %}
+            <div class="appear-animation appear-delay-3">
+              <label for="CartNoteDrawer">{{ 'cart.general.note' | t }}</label>
+              <textarea name="note" class="input-full cart-notes" id="CartNoteDrawer">{{ cart.note }}</textarea>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="drawer__footer appear-animation appear-delay-4">
+          {%- comment -%} Discount regel (wordt door JS bijgewerkt via data-savings) {%- endcomment -%}
+          <div data-savings class="cart__item-sub cart__item-row cart-drawer__discount-row hide"></div>
+
+          {%- comment -%} Secured shipping regel {%- endcomment -%}
+          <div class="cart__item-sub cart__item-row cart-drawer__trust-row">
+            <div>Secured Shipping</div>
+            <div>
+              <span class="cart-drawer__trust-free">Free</span>
+            </div>
+          </div>
+
+          <div class="cart__item-sub cart__item-row">
+            <div class="ajaxcart__subtotal">{{ 'cart.general.subtotal' | t }}</div>
+            <div data-subtotal>{{ cart.total_price | money }}</div>
+          </div>
+
+          <div class="cart__item-row text-center">
+            <small>
+              {{ 'cart.general.shipping_at_checkout' | t }}<br />
+            </small>
+          </div>
+
+          {% if settings.cart_terms_conditions_enable %}
+            <div class="cart__item-row cart__terms">
+              <input type="checkbox" id="CartTermsDrawer" class="cart__terms-checkbox">
+              <label for="CartTermsDrawer">
+                {% if settings.cart_terms_conditions_page != blank %}
+                  {{ 'cart.general.terms_html' | t: url: settings.cart_terms_conditions_page.url }}
+                {% else %}
+                  {{ 'cart.general.terms' | t }}
+                {% endif %}
+              </label>
+            </div>
+          {% endif %}
+
+          <div class="cart__checkout-wrapper">
+            <button type="submit" name="checkout" data-terms-required="{{ settings.cart_terms_conditions_enable }}" class="btn cart__checkout">
+              {{ 'cart.general.checkout' | t }}
+            </button>
+
+            {% if additional_checkout_buttons and settings.cart_additional_buttons %}
+              <div class="additional-checkout-buttons additional-checkout-buttons--vertical">{{ content_for_additional_checkout_buttons }}</div>
+            {% endif %}
+
+           {% render 'kopstorm-snippet-6' %}
+  
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer__cart-empty appear-animation appear-delay-2">
+        <div class="drawer__scrollable">
+          {{ 'cart.general.empty' | t }}
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {%- comment -%}
+    Kortingsvoortgang. Leeft op het aantal artikelen in de cart: bij een lege
+    cart verbergt de CSS de balk.
+  {%- endcomment -%}
+  <script>
+    (function () {
+      /*============================================================================
+        Kortingsvoortgang
+      ==============================================================================*/
+      function parseTiers(raw) {
+        return String(raw || '')
+          .split('|')
+          .map(function (part) {
+            var bits = part.split(':');
+            return { qty: parseInt(bits[0], 10), label: (bits[1] || '').trim() };
+          })
+          .filter(function (tier) {
+            return tier.qty > 0 && tier.label !== '';
+          })
+          .sort(function (a, b) {
+            return a.qty - b.qty;
+          });
+      }
+
+      function buildMarkers(root, tiers) {
+        var track = root.querySelector('[data-cart-progress-track]');
+        var labels = root.querySelector('[data-cart-progress-labels]');
+        if (!track || !labels || track.dataset.built === 'true') return;
+
+        tiers.forEach(function (tier, index) {
+          var position = ((index + 1) / tiers.length) * 100;
+          var isLast = index === tiers.length - 1;
+
+          var dot = document.createElement('span');
+          dot.className = 'cart-drawer__progress-dot' + (isLast ? ' is-last' : '');
+          dot.style.left = position + '%';
+          dot.setAttribute('data-tier-index', index);
+          track.appendChild(dot);
+
+          var label = document.createElement('span');
+          label.className = 'cart-drawer__progress-label' + (isLast ? ' is-last' : '');
+          label.style.left = position + '%';
+          label.setAttribute('data-tier-index', index);
+          label.textContent = tier.label + '% off';
+          labels.appendChild(label);
+        });
+
+        track.dataset.built = 'true';
+      }
+
+      function message(tiers, reached, count) {
+        if (reached === tiers.length - 1) {
+          return "You've unlocked the full " + tiers[reached].label + '% off';
+        }
+
+        var next = tiers[reached + 1];
+        var away = next.qty - count;
+        var noun = away === 1 ? 'item' : 'items';
+
+        if (reached < 0) {
+          return "You're " + away + ' ' + noun + ' away from ' + next.label + '% off';
+        }
+
+        return tiers[reached].label + '% off unlocked — ' + away + ' more ' + noun + ' for ' + next.label + '% off';
+      }
+
+      function renderProgress(root, count) {
+        var tiers = parseTiers(root.getAttribute('data-tiers'));
+        if (!tiers.length) return;
+
+        buildMarkers(root, tiers);
+
+        var reached = -1;
+        for (var i = 0; i < tiers.length; i++) {
+          if (count >= tiers[i].qty) reached = i;
+        }
+
+        /* Elke trap krijgt een even breed vak, zodat de bolletjes niet opeenhopen. */
+        var percent;
+        if (reached === tiers.length - 1) {
+          percent = 100;
+        } else {
+          var from = reached < 0 ? 0 : tiers[reached].qty;
+          var to = tiers[reached + 1].qty;
+          var within = to > from ? (count - from) / (to - from) : 0;
+          within = Math.max(0, Math.min(1, within));
+          percent = ((reached + 1 + within) / tiers.length) * 100;
+        }
+
+        var fill = root.querySelector('[data-cart-progress-fill]');
+        if (fill) fill.style.width = percent + '%';
+
+        var marks = root.querySelectorAll('[data-tier-index]');
+        for (var j = 0; j < marks.length; j++) {
+          var index = parseInt(marks[j].getAttribute('data-tier-index'), 10);
+          marks[j].classList.toggle('is-reached', index <= reached);
+        }
+
+        var text = root.querySelector('[data-cart-progress-message]');
+        if (text) text.textContent = message(tiers, reached, count);
+
+        root.setAttribute('data-count', count);
+      }
+
+      /*============================================================================
+        De balk volgt het aantal artikelen in de cart
+      ==============================================================================*/
+      function setCount(count) {
+        var roots = document.querySelectorAll('[data-cart-progress]');
+        for (var i = 0; i < roots.length; i++) {
+          renderProgress(roots[i], count);
+        }
+      }
+
+      function refresh() {
+        var url = (window.theme && theme.routes && theme.routes.cart) || '/cart.js';
+        fetch(url, { credentials: 'same-origin' })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (cart) {
+            setCount(cart.item_count);
+          })
+          .catch(function () {});
+      }
+
+      var initial = document.querySelector('[data-cart-progress]');
+      setCount(initial ? parseInt(initial.getAttribute('data-count'), 10) || 0 : 0);
+
+      document.addEventListener('cart:updated', function (evt) {
+        var cart = evt.detail && evt.detail.cart;
+        if (cart && typeof cart.item_count === 'number') {
+          setCount(cart.item_count);
+        } else {
+          refresh();
+        }
+      });
+
+      document.addEventListener('ajaxProduct:added', refresh);
+      document.addEventListener('cart:build', refresh);
+    })();
+  </script>
+{%- endif -%}

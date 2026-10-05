@@ -1,0 +1,61 @@
+<div class="views-container">
+  
+<p id="views_counter">
+👀 Ze gaan hard! <strong><span id="out"></span> live bezoekers</strong>
+</p>
+
+</div>
+
+
+<style>
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
+}
+
+  @keyframes pulse{
+    50%{
+      opacity:.5
+    }
+  }
+  
+  .views-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    position: relative;
+    margin-left: 2px;
+}
+
+#views_counter {
+  margin: 0!important;
+}
+
+@media only screen and (max-width:768px){
+
+    .views-container {
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+}
+
+  
+</style>
+
+<script>
+
+  let range = {min: 30, max: 50}
+let delta = range.max - range.min
+
+  
+  function setRandom() {
+    document.getElementById('out').innerHTML = Math.round(range.min + Math.random() * delta);
+}
+setRandom();
+setInterval(setRandom, 5000);
+</script>
+

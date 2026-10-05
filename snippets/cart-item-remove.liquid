@@ -1,0 +1,29 @@
+{%- comment -%}
+  Prullenbak in de cart. Zet de hoeveelheid van de regel op 0 via het
+  bestaande qty-veld, zodat de drawer en de cartpagina zichzelf op de
+  normale manier bijwerken. Zonder JS valt de link terug op de gewone /cart/change URL.
+{%- endcomment -%}
+<script>
+  document.addEventListener('click', function (evt) {
+    var target = evt.target;
+    if (!target || !target.closest) {
+      return;
+    }
+
+    var trigger = target.closest('[data-cart-remove]');
+    if (!trigger) {
+      return;
+    }
+
+    var item = trigger.closest('.cart__item');
+    var input = item ? item.querySelector('.js-qty__num') : null;
+    if (!input) {
+      return;
+    }
+
+    evt.preventDefault();
+    item.classList.add('cart__item--removing');
+    input.value = 0;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+</script>

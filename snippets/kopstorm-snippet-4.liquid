@@ -1,0 +1,28 @@
+<div class="main-gurentee-text">
+                 <img src="https://cdn.shopify.com/s/files/1/0753/9769/3787/files/Middel_1.svg?v=1691934826" alt="Bekijkers"><i><span class="getviditors">49</span> personer tittar nu på denna produkt</i><br><br>
+              
+            </div>
+
+            <style>
+              .main-gurentee-text {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+              }
+              .main-gurentee-text img {
+                width: 25px;
+              }
+            </style>
+
+
+              <script>
+      function randomInt(min, max) {
+         min = Math.ceil(min);
+         max = Math.floor(max);
+         return Math.floor(Math.random() * (max - min)) + min;
+      }
+    setInterval(function(){
+      $('.getviditors').text(randomInt(40,70))
+    },10000)
+     $('.getviditors').text(randomInt(40,70))
+   </script>
