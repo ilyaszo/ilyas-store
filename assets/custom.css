@@ -1,0 +1,666 @@
+/* ================================
+   PALM BEACH – SALE PRICE COLOR
+   Alleen sale price (incl. AUD)
+================================ */
+
+.product__price .price-item--sale,
+.product__price .price-item--sale *,
+.price--on-sale .price-item--sale,
+.price--on-sale .price-item--sale * {
+  color: #A40303 !important;
+}
+
+
+/* ================================
+   KIWI SIZE CHART SPACING
+   Meer ruimte tussen Size Chart
+   en Add to Cart knop
+================================ */
+
+.product-form__buttons {
+  margin-top: 20px !important;
+}
+
+
+/* ================================
+   MOBILE TUNING (OPTIONEEL)
+================================ */
+
+@media (max-width: 768px) {
+  .product-form__buttons {
+    margin-top: 14px !important;
+  }
+}
+/* ================================
+   KIWI Size Chart → meer ruimte boven ATC
+   (Impulse + Kiwi: meerdere mogelijke classes)
+================================ */
+
+/* 1) Geef de Size Chart link zelf onderruimte */
+a[class*="kiwi"],
+button[class*="kiwi"],
+.kiwi-sizing-chart,
+.kiwi-sizing-chart-btn,
+.kiwi-sizing-chart-link,
+#KiwiSizingChart,
+#KiwiSizingChartBtn {
+  margin-bottom: 16px !important;
+  display: inline-block !important; /* zorgt dat margin-bottom werkt */
+}
+
+/* 2) Extra fallback: geef de buy-buttons wat top ruimte */
+.product-form__submit,
+.product-form__cart-submit,
+.product-form__buttons,
+.product-form__button-container,
+.buy-buttons,
+.shopify-payment-button,
+.shopify-payment-button__button {
+  margin-top: 16px !important;
+}
+
+/* 3) Als ATC een .btn is in Impulse */
+.btn--add-to-cart,
+button[name="add"] {
+  margin-top: 16px !important;
+}
+/* Kiwi Size Chart dichter bij size options (zonder layout te breken) */
+a[class*="kiwi"],
+button[class*="kiwi"],
+.kiwi-sizing-chart,
+.kiwi-sizing-chart-btn,
+.kiwi-sizing-chart-link,
+#KiwiSizingChart,
+#KiwiSizingChartBtn {
+  margin-top: 4px !important;
+  margin-bottom: 16px !important; /* laat dit zoals het werkte */
+  display: inline-block !important;
+}
+/* ================================
+   LOW STOCK DOT – REFINED VERSION
+================================ */
+
+.red-dot-wrapper {
+  width: 12px;
+  height: 12px;
+}
+
+.red-dot {
+  width: 9px;
+  height: 9px;
+  animation: dot-bounce 1.8s ease-in-out infinite;
+}
+
+.pulse {
+  width: 9px;
+  height: 9px;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Zachtere, tragere pulse */
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Heel subtiele ademhaling */
+@keyframes dot-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+.notification .red-dot-wrapper,
+.notification .red-dot,
+.notification .pulse {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+/* ================================
+   LOW STOCK DOT – FINAL FIX
+================================ */
+
+/* Layout van de regel */
+.notification {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+}
+
+/* Wrapper moet relative zijn zodat pulse absolute kan */
+.notification .red-dot-wrapper {
+  position: relative !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 12px !important;
+}
+
+/* Rode dot zichtbaar */
+.notification .red-dot {
+  position: relative !important;
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  background: #d10000 !important;
+  z-index: 2 !important;
+  animation: dot-bounce 1.8s ease-in-out infinite !important;
+}
+
+/* Pulse correct centreren */
+.notification .pulse {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  background: rgba(209, 0, 0, 0.45) !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1 !important;
+  animation: pulse-ring 2s ease-out infinite !important;
+  pointer-events: none !important;
+}
+
+/* Animaties */
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes dot-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+/* Align low-stock snippet with Impulse sales bullets */
+.flex-div-wrapper {
+  padding-left: 8px;
+}
+/* Zorg dat prijs netjes inline blijft */
+#conhit_badge-container p {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ================================
+   AUD naast prijs – zelfde grootte als prijs
+   (simpel & stabiel)
+================================ */
+
+/* Zorg dat prijs netjes inline blijft */
+#conhit_badge-container p {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* AUD alleen achter de HUIDIGE prijs */
+#conhit_badge-container p:first-of-type::after {
+  content: " AUD";
+  font-size: inherit;        /* exact dezelfde grootte */
+  font-weight: inherit;      /* niet extra dik */
+  color: inherit;            /* exact dezelfde kleur */
+  margin-left: 6px;
+  line-height: inherit;
+  opacity: 1;
+}
+
+/* Geen AUD achter compare-at prijs */
+#conhit_badge-container p:nth-of-type(2)::after {
+  content: none !important;
+}
+/* ================================
+   Prijs + AUD allebei dik (Conhit override)
+================================ */
+
+/* Prijsregel (eerste p) dik maken */
+#conhit_badge-container p:first-of-type{
+  display: inline-flex !important;
+  align-items: center !important;
+  font-weight: 700 !important;   /* ✅ override inline 400 */
+}
+
+/* AUD achter huidige prijs */
+#conhit_badge-container p:first-of-type::after{
+  content: " AUD";
+  font-size: inherit !important;   /* zelfde grootte als prijs */
+  font-weight: 700 !important;     /* ✅ ook dik */
+  color: inherit !important;       /* zelfde groen */
+  margin-left: 6px;
+  line-height: inherit;
+  opacity: 1 !important;
+}
+
+/* ❌ Geen AUD achter compare-at prijs */
+#conhit_badge-container p:nth-of-type(2)::after{
+  content: none !important;
+}
+
+/* ================================
+   SAVE % OFF BADGE
+   Kleur gelinkt aan announcement bar
+   (--colorAnnouncement / --colorAnnouncementText)
+================================ */
+
+.product__save-badge {
+  display: inline-block;
+  background-color: var(--colorAnnouncement);
+  color: var(--colorAnnouncementText);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* ================================
+   KLEINERE GAP: PRODUCT TITEL → PRIJS
+================================ */
+
+.product-single__title {
+  margin-bottom: 0 !important;
+}
+
+.product-block--header {
+  margin-bottom: 4px !important; /* visueel ~2px (line-height compensatie) */
+}
+
+.product-block--header + .product-block--price {
+  margin-top: 0 !important;
+}
+
+.product-single__meta .product-block--price {
+  margin-top: 0 !important;
+}
+
+/* ================================
+   KLEINERE GAP: PRIJS → SALES POINT
+================================ */
+
+.product-single__meta .product-block--price {
+  margin-bottom: 3px !important;
+}
+
+.product-block--price + .product-block--sales-point {
+  margin-top: 0 !important;
+}
+
+/* ================================
+   CART DRAWER: KORTINGSTRAP
+   De kleuren komen uit de announcement bar, zodat ze
+   automatisch meelopen met de storekleuren.
+================================ */
+
+/* Lege cart: niets om korting op te bouwen. */
+.drawer.is-empty .cart-drawer__progress {
+  display: none;
+}
+
+.cart-drawer__progress {
+  background-color: var(--colorAnnouncement);
+  color: var(--colorAnnouncementText);
+  padding: 14px 20px 13px;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.cart-drawer__progress-message {
+  margin: 0 0 11px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+.cart-drawer__progress-track {
+  position: relative;
+  height: 3px;
+  margin: 0 5px;
+  border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.cart-drawer__progress-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--colorAnnouncementText);
+  transition: width 0.4s ease;
+}
+
+.cart-drawer__progress-dot {
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 50%;
+  background-color: var(--colorAnnouncement);
+  transform: translateX(-50%);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.cart-drawer__progress-dot.is-last {
+  transform: translateX(-100%);
+}
+
+.cart-drawer__progress-dot.is-reached {
+  border-color: var(--colorAnnouncementText);
+  background-color: var(--colorAnnouncementText);
+}
+
+.cart-drawer__progress-labels {
+  position: relative;
+  height: 13px;
+  margin: 9px 5px 0;
+}
+
+.cart-drawer__progress-label {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  line-height: 13px;
+  opacity: 0.45;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.cart-drawer__progress-label.is-last {
+  transform: translateX(-100%);
+}
+
+.cart-drawer__progress-label.is-reached {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* ================================
+   CART PRODUCT FOTO'S
+   Ronde hoeken, iets groter, gevuld (cover)
+================================ */
+
+.cart__image a,
+.cart__image .image-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cart__image img {
+  object-fit: cover !important; /* zoomt in zodat het vlak gevuld wordt */
+  border-radius: 10px;
+}
+
+/* Groter + staand formaat in de drawer (was 95x95) */
+.drawer .cart__image {
+  flex: 0 0 100px !important;
+}
+
+.drawer .cart__image a {
+  height: 140px !important;
+}
+
+/* ================================
+   CART: TITEL GROTER, PRIJZEN
+================================ */
+
+/* Producttitel iets groter in de drawer */
+.drawer .cart__item-name {
+  font-size: calc(var(--typeBaseSize) + 3px) !important;
+}
+
+/* Nieuwe prijs: rood, donkere kant maar niet te donker */
+.cart__item-price-col .cart__price {
+  color: #A40303 !important;
+  font-weight: 700;
+}
+
+/* Oude (doorgestreepte) prijs: kleiner en neutraal grijs */
+.cart__item-price-col .cart__price--strikethrough {
+  color: #777777 !important;
+  font-weight: 400;
+  font-size: 0.8em;
+}
+
+/* ================================
+   CART: PRIJSKOLOM (prijs, besparing, badge)
+================================ */
+
+/* Aantalkiezer en prijskolom bovenaan uitlijnen. */
+.cart__item .cart__item-sub {
+  align-items: flex-start;
+}
+
+/* Prijs, besparing en badge onder elkaar, rechts uitgelijnd. */
+.cart__item-price-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+/* Nieuwe prijs en doorgestreepte vanafprijs naast elkaar op de tekstbasis. */
+.cart__item-price-col .cart__price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Nieuwe prijs groter */
+.cart__item-price-col .cart__price:not(.cart__price--strikethrough) {
+  font-size: calc(var(--typeBaseSize) + 4px);
+}
+
+/* Grijze kortingsbadge onder de prijs */
+.cart__price-badge {
+  display: inline-block;
+  background: #f1f1f1;
+  color: #6b6b6b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 4px 7px;
+  border-radius: 4px;
+}
+
+/* ================================
+   CART: SECURED SHIPPING (boven Total)
+================================ */
+
+.cart-drawer__trust-row {
+  font-size: 14px;
+  margin-bottom: 8px !important;
+}
+
+.cart-drawer__trust-free {
+  font-weight: 700;
+  color: #000000;
+}
+
+/* ================================
+   CART: GAP TOTAL → CHECKOUT KNOP (5px)
+================================ */
+
+/* Total-regel marge van 20px naar 5px */
+.drawer .cart__item-row:has(.ajaxcart__subtotal) {
+  margin-bottom: 5px !important;
+}
+
+/* Lege 'shipping at checkout' regel verbergen (nam onnodig ruimte in) */
+.drawer .drawer__footer .cart__item-row.text-center {
+  display: none;
+}
+
+/* Total in normale letters i.p.v. hoofdletters */
+.ajaxcart__subtotal {
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-size: 1em !important;
+  font-weight: 700;
+}
+
+/* ================================
+   CART: DISCOUNT REGEL
+================================ */
+
+.cart-drawer__discount-row {
+  font-size: 14px;
+  margin-bottom: 8px !important;
+}
+
+.cart-drawer__discount-amount {
+  font-weight: 700;
+  color: #A40303;
+}
+
+/* ================================
+   CART: CHECKOUT KNOP AFGEROND
+================================ */
+
+.drawer .cart__checkout,
+.cart__checkout {
+  border-radius: 10px !important;
+}
+
+/* ================================
+   CART DRAWER: VOLLEDIG SCHERM (mobiel)
+================================ */
+
+@media only screen and (max-width: 768px) {
+  .drawer--right {
+    width: 100% !important;
+    max-width: 100% !important;
+    right: -100% !important;
+  }
+
+  .drawer--right.drawer--is-open {
+    transform: translateX(-100%) !important;
+  }
+}
+
+
+
+/* ================================
+   PRODUCT: SIZE GUIDE ONDER DE MAATKNOPPEN
+================================ */
+
+/* Het maatlabel heeft de size chart niet meer inline staan, dus de rij
+   mag weer gewoon links uitlijnen. */
+.variant__label--size-chart[for] {
+  display: block;
+}
+
+/* De size guide-link staat onder de maatknoppen, links uitgelijnd. */
+.variant__size-chart-below {
+  margin: 10px 0 2px;
+}
+
+.variant__size-chart-below .tool-tip-trigger,
+.variant__size-chart-below .tool-tip-trigger__title {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  text-align: left;
+}
+
+.variant__size-chart-below .tool-tip-trigger__title {
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #1a1a1a;
+}
+
+/* Meetlat-icoon links van de tekst, alleen de tekst is onderlijnd. */
+.size-chart__standalone .tool-tip-trigger .icon,
+.variant__size-chart-below .tool-tip-trigger .icon {
+  height: 16px;
+  width: 16px;
+  margin: 0;
+  flex: 0 0 auto;
+  stroke-width: 6;
+}
+
+.size-chart__link-text {
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/*============================================================================
+  Prullenbak per cart-regel (drawer + cartpagina)
+==============================================================================*/
+.cart__item {
+  position: relative;
+}
+
+/* Ruimte vrijhouden zodat een lange producttitel niet onder het icoon loopt. */
+.cart__item-title {
+  padding-right: 30px;
+}
+
+.cart__item-remove {
+  position: absolute;
+  right: 0;
+  top: 0;
+  line-height: 0;
+}
+
+/* De eerste regel heeft padding-top: 10px, het icoon schuift mee. */
+.cart__item:first-child .cart__item-remove {
+  top: 10px;
+}
+
+.cart__item-remove-btn {
+  display: block;
+  padding: 2px;
+  color: inherit;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.cart__item-remove-btn:hover,
+.cart__item-remove-btn:focus {
+  color: inherit;
+  opacity: 1;
+}
+
+.cart__item-remove-btn .icon-trash {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+}
+
+/* Even uitgrijzen terwijl de regel verwijderd wordt. */
+.cart__item--removing {
+  opacity: 0.5;
+  pointer-events: none;
+}
