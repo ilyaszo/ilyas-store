@@ -1,0 +1,173 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "collection-header": {
+      "type": "collection-header",
+      "disabled": true,
+      "settings": {
+        "enable": true,
+        "collection_image_enable": true,
+        "parallax": true,
+        "parallax_direction": "top"
+      }
+    },
+    "slideshow_rHnjT9": {
+      "type": "slideshow",
+      "blocks": {
+        "image_RzWjNE": {
+          "type": "image",
+          "settings": {
+            "top_subheading": "",
+            "title": "",
+            "title_size": 80,
+            "subheading": "",
+            "link": "",
+            "link_text": "",
+            "link_2": "",
+            "link_text_2": "",
+            "color_accent": "rgba(0,0,0,0)",
+            "text_align": "vertical-center horizontal-center",
+            "parallax_direction": "top",
+            "overlay_opacity": 0
+          }
+        }
+      },
+      "block_order": [
+        "image_RzWjNE"
+      ],
+      "name": "t:sections.slideshow.presets.hero_optional_slideshow.name",
+      "settings": {
+        "section_height": "natural",
+        "mobile_height": "250px",
+        "parallax": false,
+        "style": "bars",
+        "autoplay": false,
+        "autoplay_speed": 5,
+        "lazyload_images": true
+      }
+    },
+    "rich_text_rkiRjq": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_bKhAfq": {
+          "type": "heading",
+          "settings": {
+            "title": "SPRING SALE"
+          }
+        },
+        "text_CxccPV": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": false,
+            "text": "<p>Founded with a love for timeless style, <strong>Clara Sydney</strong> is a family brand shaped across generations.</p><p>To mark this moment, selected styles have been <strong>thoughtfully reduced</strong>, with <strong>additional savings</strong> when purchasing multiple pieces.</p><p><strong>Bundle savings</strong></p><p><strong>10% EXTRA</strong> on 2 items<br/><strong>15% EXTRA</strong> on 3 items<br/><strong>20% EXTRA</strong> on 4 items</p><p><em>Savings apply automatically at checkout.</em></p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_bKhAfq",
+        "text_CxccPV"
+      ],
+      "name": "t:sections.rich-text.presets.rich_text.name",
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "main-collection": {
+      "type": "main-collection",
+      "blocks": {
+        "collection_description": {
+          "type": "collection_description",
+          "settings": {}
+        },
+        "subcollections": {
+          "type": "subcollections",
+          "settings": {
+            "subcollections_per_row": 5
+          }
+        },
+        "product_grid": {
+          "type": "product_grid",
+          "settings": {
+            "enable_collection_count": true,
+            "per_row": 4,
+            "rows_per_page": 20,
+            "mobile_flush_grid": false
+          }
+        }
+      },
+      "block_order": [
+        "collection_description",
+        "subcollections",
+        "product_grid"
+      ],
+      "settings": {
+        "enable_sidebar": false,
+        "collapsed": true,
+        "filter_style": "sidebar",
+        "enable_color_swatches": false,
+        "enable_sort": true
+      }
+    },
+    "text_with_icons_3VqBKg": {
+      "type": "text-with-icons",
+      "blocks": {
+        "text_block_KM8FWF": {
+          "type": "text_block",
+          "settings": {
+            "icon": "truck",
+            "title": "Free Shipping",
+            "text": "<p>We offer free and fast shipping for maximum customer comfort. Your satisfaction is important to us, which is why we offer smooth and free delivery.</p>"
+          }
+        },
+        "text_block_kT6w4k": {
+          "type": "text_block",
+          "settings": {
+            "icon": "chat",
+            "title": "CUSTOMER SERVICE",
+            "text": "<p>Feel free to contact us at support@palm-beachboutique.com. We're ready to help and provide you with the right guidance.</p>"
+          }
+        },
+        "text_block_UBYPGC": {
+          "type": "text_block",
+          "settings": {
+            "icon": "shield",
+            "title": "SECURE PAYMENT",
+            "text": "<p>We offer you a variety of secure payment options like Credit card and Paypal. Pay easily and enjoy a safe shopping experience.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text_block_KM8FWF",
+        "text_block_kT6w4k",
+        "text_block_UBYPGC"
+      ],
+      "name": "t:common.text_with_icons.presets.text_with_icons.name",
+      "settings": {
+        "title": "",
+        "align_text": "center",
+        "desktop_columns_per_row": 3,
+        "icon_color": "#000000",
+        "button_label": "",
+        "button_link": "",
+        "divider": false
+      }
+    }
+  },
+  "order": [
+    "collection-header",
+    "slideshow_rHnjT9",
+    "rich_text_rkiRjq",
+    "main-collection",
+    "text_with_icons_3VqBKg"
+  ]
+}
