@@ -1,0 +1,138 @@
+<div class="review-kopstorm-main">
+<div class="page-width">
+<div class="review-kopstorm">
+  <div>
+    <h3>"{{ section.settings.review }}"</h3>
+    <span>{{ section.settings.name }}</span>
+    <span style="font-weight: bold;">- Verified</span>
+  </div>
+</div>
+</div>
+</div>
+
+<style>
+  .review-kopstorm {
+  background: {{section.settings.bg-color}}!important;
+  padding: 75px;
+  border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .review-kopstorm h3 {
+    line-height: 1.2!important;
+  }
+
+  @media only screen and (max-width: 769px){
+      .review-kopstorm {
+  background: {{section.settings.bg-color}}!important;
+  padding: 50px;
+  border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .review-kopstorm h3 {
+    line-height: 1.2!important;
+  }
+  }
+</style>
+
+   <style>
+    .review-kopstorm-main {
+      padding-top: {{ section.settings.padding-top-desktop }}px!important;
+      padding-bottom: {{ section.settings.padding-bottom-desktop }}px!important;
+    }
+
+    @media screen and (max-width: 767px) {
+       .review-kopstorm-main {
+      padding-top: {{ section.settings.padding-top-mobile }}px!important;
+      padding-bottom: {{ section.settings.padding-bottom-mobile }}px!important;
+    }
+    }
+    </style>
+
+{% schema %}
+  {
+    "name": "Section 1 Kopstorm",
+    "settings": [
+
+    {
+      "type": "checkbox",
+      "id": "show_css_grid_section",
+      "label": "Show this section",
+      "default": true
+    },
+                       {
+  "type": "range",
+  "id": "padding-top-desktop",
+  "min": 0,
+  "max": 100,
+  "step": 5,
+  "unit": "px",
+  "label": "Spacing top desktop",
+  "default": 50
+},
+            {
+  "type": "range",
+  "id": "padding-bottom-desktop",
+  "min": 0,
+  "max": 100,
+  "step": 5,
+  "unit": "px",
+  "label": "Spacing bottom desktop",
+  "default": 50
+},
+            {
+  "type": "range",
+  "id": "padding-top-mobile",
+  "min": 0,
+  "max": 100,
+  "step": 5,
+  "unit": "px",
+  "label": "Spacing top mobile",
+  "default": 50
+},
+            {
+  "type": "range",
+  "id": "padding-bottom-mobile",
+  "min": 0,
+  "max": 100,
+  "step": 5,
+  "unit": "px",
+  "label": "Spacing bottom mobile",
+  "default": 50
+},
+{
+  "type": "text",
+  "id": "review",
+  "label": "Review",
+  "default": "This is without a doubt my best purchase of 2023. Excellent quality."
+},
+
+      {
+  "type": "text",
+  "id": "name",
+  "label": "Name",
+  "default": "Noah M."
+},
+      
+    {
+  "type": "color",
+  "id": "bg-color",
+  "label": "Background color",
+  "default": "#fceadc"
+}
+    
+
+],
+	"presets": [
+    {
+       "name": "Section 1 Kopstorm",
+       "category": "section"
+    }
+]
+  }
+{% endschema %}
