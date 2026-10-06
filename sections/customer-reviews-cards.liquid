@@ -28,6 +28,28 @@
   endif
   assign avg_display = avg10 | divided_by: 10.0
   assign avg_pct = avg10 | times: 2
+
+  comment
+    De marquee loopt door een dubbele set kaarten, zodat hij naar het begin
+    kan terugspringen zonder dat je dat ziet. De duur schaalt mee met het
+    aantal kaarten, anders gaat de band sneller lopen zodra er een review bij
+    komt.
+  endcomment
+  assign card_count = rating_count
+  if keep_empty
+    assign card_count = section.blocks.size
+  endif
+
+  assign marquee = section.settings.autoscroll
+  assign passes = 1
+  if marquee
+    assign passes = 2
+  endif
+
+  assign duration = card_count | times: section.settings.scroll_speed
+  if duration < 12
+    assign duration = 12
+  endif
 -%}
 
 {%- if has_content -%}
@@ -86,18 +108,28 @@
   {%- endif -%}
 
   {%- if section.blocks.size > 0 -%}
-    <div class="rev-cards__viewport">
-      <button class="rev-cards__arrow rev-cards__arrow--prev" type="button" aria-label="Vorige reviews" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+    <div class="rev-cards__viewport{% if marquee %} rev-cards__viewport--marquee{% endif %}">
+      {%- unless marquee -%}
+        <button class="rev-cards__arrow rev-cards__arrow--prev" type="button" aria-label="Vorige reviews" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      {%- endunless -%}
 
-      <ul class="rev-cards__track" role="list">
+      <ul
+        class="rev-cards__track{% if marquee %} rev-cards__track--marquee{% endif %}"
+        role="list"
+        {% if marquee %}style="--rev-duration: {{ duration }}s"{% endif %}>
+        {%- for pass in (1..passes) -%}
         {%- for block in section.blocks -%}
           {%- if block.settings.quote == blank and block.settings.author == blank and keep_empty == false -%}
             {%- continue -%}
           {%- endif -%}
           {%- assign pct = block.settings.rating | times: 20 -%}
-          <li class="rev-card" {{ block.shopify_attributes }}>
+          {%- comment -%}
+            De tweede set is puur visueel: geen editor-handvatten en uit de
+            voorleesvolgorde, anders hoort een schermlezer elke review dubbel.
+          {%- endcomment -%}
+          <li class="rev-card" {% if pass == 1 %}{{ block.shopify_attributes }}{% else %}aria-hidden="true"{% endif %}>
             <div class="rev-card__person">
               {%- if block.settings.avatar != blank -%}
                 <div class="rev-card__avatar">
@@ -149,11 +181,14 @@
             {%- endif -%}
           </li>
         {%- endfor -%}
+        {%- endfor -%}
       </ul>
 
-      <button class="rev-cards__arrow rev-cards__arrow--next" type="button" aria-label="Volgende reviews" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      {%- unless marquee -%}
+        <button class="rev-cards__arrow rev-cards__arrow--next" type="button" aria-label="Volgende reviews" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      {%- endunless -%}
     </div>
   {%- endif -%}
 </div>
@@ -162,6 +197,7 @@
 
 {% stylesheet %}
 .rev-cards {
+  --rev-gap: 22px;
   background-color: var(--rev-bg);
   color: var(--rev-text);
   padding: 54px 0 60px;
@@ -231,7 +267,7 @@
 
 .rev-cards__track {
   display: flex;
-  gap: 22px;
+  gap: var(--rev-gap);
   margin: 0;
   padding: 4px calc((100vw - 1180px) / 2) 4px;
   list-style: none;
@@ -245,7 +281,41 @@
 .rev-cards__track::-webkit-scrollbar { display: none; }
 
 @media (max-width: 1240px) {
-  .rev-cards__track { padding-left: 22px; padding-right: 22px; }
+  .rev-cards__track { padding-left: var(--rev-gap); padding-right: var(--rev-gap); }
+}
+
+/* ---- auto-scroll (marquee) ------------------------------------------ */
+/* The track holds two identical sets of cards. Shifting it by exactly one
+   set plus one gap lands the second set where the first began, so the reset
+   at the end of the loop is invisible. */
+.rev-cards__viewport--marquee { overflow: hidden; }
+
+.rev-cards__track--marquee {
+  width: max-content;
+  padding-left: var(--rev-gap);
+  padding-right: 0;
+  overflow: visible;
+  scroll-snap-type: none;
+  animation: rev-marquee var(--rev-duration, 60s) linear infinite;
+}
+
+@keyframes rev-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - var(--rev-gap) / 2)); }
+}
+
+/* Let people stop the band to actually read a card. */
+.rev-cards__track--marquee:hover,
+.rev-cards__track--marquee:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rev-cards__track--marquee {
+    animation: none;
+    width: auto;
+    overflow-x: auto;
+  }
 }
 
 .rev-card {
@@ -374,6 +444,10 @@
     var track = root.querySelector('.rev-cards__track');
     if (!track) return;
 
+    // The marquee runs on CSS alone and relies on the two card sets staying
+    // in order, so there is nothing for this script to do there.
+    if (track.classList.contains('rev-cards__track--marquee')) return;
+
     // Varying the order keeps the block from looking static on repeat visits.
     // Off inside the theme editor so blocks stay where the merchant put them.
     if (root.dataset.shuffle === 'true' && !(window.Shopify && window.Shopify.designMode)) {
@@ -460,8 +534,27 @@
     },
     {
       "type": "checkbox",
+      "id": "autoscroll",
+      "label": "Slowly scroll to the left",
+      "info": "Pauses when a visitor hovers a card. Replaces the arrows.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll speed",
+      "info": "Seconds each card takes to cross the screen. Higher is slower.",
+      "min": 3,
+      "max": 20,
+      "step": 1,
+      "unit": "s",
+      "default": 9
+    },
+    {
+      "type": "checkbox",
       "id": "shuffle",
       "label": "Shuffle card order on each visit",
+      "info": "Only applies when auto-scroll is off.",
       "default": false
     },
     {
