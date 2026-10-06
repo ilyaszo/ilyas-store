@@ -58,9 +58,11 @@
   .rev-cards-{{ section.id }} {
     --rev-bg: {{ section.settings.color_background }};
     --rev-card-bg: {{ section.settings.color_card }};
+    --rev-card-alt: {{ section.settings.color_accent | color_mix: section.settings.color_card, 10 }};
     --rev-text: {{ section.settings.color_text }};
     --rev-muted: {{ section.settings.color_text | color_mix: section.settings.color_card, 62 }};
-    --rev-line: {{ section.settings.color_text | color_mix: section.settings.color_card, 14 }};
+    --rev-line: {{ section.settings.color_text | color_mix: section.settings.color_card, 16 }};
+    --rev-accent: {{ section.settings.color_accent }};
     --rev-star: {{ section.settings.color_stars }};
     --rev-star-off: {{ section.settings.color_stars | color_mix: section.settings.color_card, 22 }};
   }
@@ -88,19 +90,24 @@
 
         {%- if section.settings.show_summary and rating_count > 0 -%}
           <div class="rev-cards__summary">
-            <span class="rev-stars rev-stars--lg" style="--rev-pct: {{ avg_pct }}%" role="img" aria-label="Gemiddeld {{ avg_display }} van de 5 sterren">
-              <span class="rev-stars__track" aria-hidden="true">
-                {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
-              </span>
-              <span class="rev-stars__fill" aria-hidden="true">
-                {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
-              </span>
-            </span>
             <span class="rev-cards__score">{{ avg_display }}</span>
-            {%- if section.settings.summary_text != blank -%}
-              <span class="rev-cards__divider" aria-hidden="true"></span>
-              <span class="rev-cards__trust">{{ section.settings.summary_text | escape }}</span>
-            {%- endif -%}
+            <div class="rev-cards__score-meta">
+              <span class="rev-stars rev-stars--lg" style="--rev-pct: {{ avg_pct }}%" role="img" aria-label="Gemiddeld {{ avg_display }} van de 5 sterren">
+                <span class="rev-stars__track" aria-hidden="true">
+                  {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
+                </span>
+                <span class="rev-stars__fill" aria-hidden="true">
+                  {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
+                </span>
+              </span>
+              <span class="rev-cards__trust">
+                {%- if section.settings.summary_text != blank -%}
+                  {{ section.settings.summary_text | escape }}
+                {%- else -%}
+                  {{ rating_count }} {% if rating_count == 1 %}review{% else %}reviews{% endif %}
+                {%- endif -%}
+              </span>
+            </div>
           </div>
         {%- endif -%}
       </div>
@@ -124,61 +131,57 @@
           {%- if block.settings.quote == blank and block.settings.author == blank and keep_empty == false -%}
             {%- continue -%}
           {%- endif -%}
-          {%- assign pct = block.settings.rating | times: 20 -%}
+          {%- liquid
+            assign pct = block.settings.rating | times: 20
+            comment
+              Initialen uit de naam: "Kim R." wordt KR, "S.P." wordt SP.
+            endcomment
+            assign name_parts = block.settings.author | replace: '.', ' ' | strip | split: ' '
+            assign initials = name_parts.first | slice: 0
+            if name_parts.size > 1
+              assign initials = name_parts.first | slice: 0 | append: name_parts.last | slice: 0, 2
+            endif
+          -%}
           {%- comment -%}
             De tweede set is puur visueel: geen editor-handvatten en uit de
             voorleesvolgorde, anders hoort een schermlezer elke review dubbel.
           {%- endcomment -%}
           <li class="rev-card" {% if pass == 1 %}{{ block.shopify_attributes }}{% else %}aria-hidden="true"{% endif %}>
-            <div class="rev-card__person">
-              {%- if block.settings.avatar != blank -%}
-                <div class="rev-card__avatar">
-                  {%- render 'image-element',
-                    img: block.settings.avatar,
-                    sizeVariable: '52px',
-                    fallback: '52px',
-                    widths: '52, 104, 156'
-                  -%}
-                </div>
-              {%- else -%}
-                <div class="rev-card__avatar rev-card__avatar--initial" aria-hidden="true">
-                  {{ block.settings.author | strip | slice: 0 | upcase }}
-                </div>
+            <div class="rev-card__top">
+              <span class="rev-stars" style="--rev-pct: {{ pct }}%" role="img" aria-label="{{ block.settings.rating }} van de 5 sterren">
+                <span class="rev-stars__track" aria-hidden="true">
+                  {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
+                </span>
+                <span class="rev-stars__fill" aria-hidden="true">
+                  {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
+                </span>
+              </span>
+              {%- if section.settings.show_heart -%}
+                <svg class="rev-card__mark" viewBox="0 0 32 24" aria-hidden="true">
+                  <path d="M0 24V14.4C0 6.6 4.3 1.7 11.6 0l1.5 3.3C9 4.6 6.9 7.3 6.6 11H13v13H0zm19 0V14.4C19 6.6 23.3 1.7 30.6 0l1.4 3.3c-4.1 1.3-6.2 4-6.5 7.7H32v13H19z"/>
+                </svg>
               {%- endif -%}
+            </div>
 
-              <div class="rev-card__who">
+            {%- if block.settings.tag != blank -%}
+              <p class="rev-card__tag">{{ block.settings.tag | escape }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.quote != blank -%}
+              <blockquote class="rev-card__quote">{{ block.settings.quote }}</blockquote>
+            {%- endif -%}
+
+            <div class="rev-card__person">
+              <span class="rev-card__initials" aria-hidden="true">{{ initials | upcase }}</span>
+              <span class="rev-card__who">
                 {%- if block.settings.author != blank -%}
                   <span class="rev-card__name">{{ block.settings.author | escape }}</span>
                 {%- endif -%}
                 {%- if block.settings.location != blank -%}
                   <span class="rev-card__location">{{ block.settings.location | escape }}</span>
                 {%- endif -%}
-              </div>
+              </span>
             </div>
-
-            <span class="rev-stars" style="--rev-pct: {{ pct }}%" role="img" aria-label="{{ block.settings.rating }} van de 5 sterren">
-              <span class="rev-stars__track" aria-hidden="true">
-                {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
-              </span>
-              <span class="rev-stars__fill" aria-hidden="true">
-                {%- for i in (1..5) -%}<svg class="rev-stars__icon"><use href="#rev-star-{{ section.id }}"/></svg>{%- endfor -%}
-              </span>
-            </span>
-
-            {%- if block.settings.quote != blank -%}
-              <blockquote class="rev-card__quote">{{ block.settings.quote }}</blockquote>
-            {%- endif -%}
-
-            {%- if block.settings.tag != blank -%}
-              <div class="rev-card__foot">
-                <span class="rev-card__tag">{{ block.settings.tag | escape }}</span>
-                {%- if section.settings.show_heart -%}
-                  <svg class="rev-card__heart" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 21s-7.5-4.6-9.6-9A5.1 5.1 0 0112 5.4 5.1 5.1 0 0121.6 12c-2.1 4.4-9.6 9-9.6 9z"/>
-                  </svg>
-                {%- endif -%}
-              </div>
-            {%- endif -%}
           </li>
         {%- endfor -%}
         {%- endfor -%}
@@ -197,38 +200,64 @@
 
 {% stylesheet %}
 .rev-cards {
-  --rev-gap: 22px;
+  --rev-gap: 20px;
   background-color: var(--rev-bg);
   color: var(--rev-text);
-  padding: 54px 0 60px;
+  padding: 64px 0 68px;
   overflow: hidden;
 }
 
-.rev-cards__head { text-align: center; }
+/* ---- heading: title left, score right ------------------------------ */
+.rev-cards__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px 40px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--rev-line);
+}
 
 .rev-cards__title {
-  margin: 0 0 14px;
-  letter-spacing: .04em;
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  text-transform: none;
 }
 
 .rev-cards__summary {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: 15px;
+  gap: 14px;
 }
 
-.rev-cards__score { font-weight: 600; font-size: 19px; }
-
-.rev-cards__divider {
-  width: 1px;
-  height: 18px;
-  background: var(--rev-line);
+.rev-cards__score {
+  font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+  font-size: 52px;
+  line-height: 1;
+  color: var(--rev-accent);
 }
 
-.rev-cards__trust { color: var(--rev-muted); }
+.rev-cards__score-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rev-cards__trust {
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--rev-muted);
+}
+
+@media (max-width: 749px) {
+  .rev-cards { padding: 44px 0 48px; }
+  .rev-cards__head { align-items: flex-start; flex-direction: column; }
+  .rev-cards__score { font-size: 42px; }
+}
 
 /* ---- stars ---------------------------------------------------------- */
 .rev-stars {
@@ -250,23 +279,24 @@
 .rev-stars__fill  .rev-stars__icon { fill: var(--rev-star); }
 
 .rev-stars__icon {
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   display: inline-block;
   vertical-align: top;
-  margin-right: 2px;
+  margin-right: 1px;
 }
 
-.rev-stars--lg .rev-stars__icon { width: 19px; height: 19px; margin-right: 3px; }
+.rev-stars--lg .rev-stars__icon { width: 17px; height: 17px; margin-right: 2px; }
 
 /* ---- carousel ------------------------------------------------------- */
 .rev-cards__viewport {
   position: relative;
-  margin-top: 30px;
+  margin-top: 34px;
 }
 
 .rev-cards__track {
   display: flex;
+  align-items: stretch;
   gap: var(--rev-gap);
   margin: 0;
   padding: 4px calc((100vw - 1180px) / 2) 4px;
@@ -318,92 +348,101 @@
   }
 }
 
+/* ---- card ----------------------------------------------------------- */
+/* Flat, outlined cards with a coloured top edge; every other card gets a
+   tint so the band reads as a rhythm instead of a row of identical boxes. */
 .rev-card {
-  flex: 0 0 272px;
-  scroll-snap-align: center;
+  flex: 0 0 300px;
+  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   background: var(--rev-card-bg);
-  border-radius: 8px;
-  padding: 22px 22px 18px;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, .07);
+  border: 1px solid var(--rev-line);
+  border-top: 3px solid var(--rev-accent);
+  border-radius: 2px;
+  padding: 22px 24px 20px;
 }
+
+.rev-card:nth-child(even) { background: var(--rev-card-alt); }
 
 @media (max-width: 600px) {
-  .rev-card { flex-basis: 78vw; }
+  .rev-card { flex-basis: 80vw; }
 }
 
-.rev-card__person {
+.rev-card__top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
 }
 
-.rev-card__avatar {
-  width: 52px;
-  height: 52px;
+.rev-card__mark {
+  width: 26px;
+  height: 20px;
   flex-shrink: 0;
-  border-radius: 50%;
-  overflow: hidden;
+  fill: var(--rev-accent);
+  opacity: .35;
 }
 
-.rev-card__avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.rev-card__tag {
+  margin: 16px 0 0;
+  font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+  font-size: 19px;
+  line-height: 1.25;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.rev-card__avatar--initial {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--rev-line);
-  font-size: 20px;
-  font-weight: 600;
-}
+.rev-card__tag::first-letter { text-transform: uppercase; }
 
-.rev-card__who { display: flex; flex-direction: column; gap: 2px; }
-.rev-card__name { font-weight: 600; font-size: 16px; }
-.rev-card__location { font-size: 13px; color: var(--rev-muted); }
-
-/* flex: 1 lets the footer sit on the baseline even when quotes differ in length */
+/* flex: 1 pushes the name to the bottom even when quotes differ in length */
 .rev-card__quote {
   flex: 1 1 auto;
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   padding: 0;
   border: 0;
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1.65;
+  color: var(--rev-muted);
 }
 
 .rev-card__quote p { margin: 0 0 .6em; }
 .rev-card__quote p:last-child { margin-bottom: 0; }
 
-.rev-card__foot {
+.rev-card__person {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--rev-line);
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.rev-card__tag {
+.rev-card__initials {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--rev-text);
+  color: var(--rev-card-bg);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: .07em;
-  text-transform: uppercase;
+  letter-spacing: .04em;
 }
 
-.rev-card__heart {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  fill: currentColor;
+.rev-card__who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 6px;
+  font-size: 13px;
 }
+
+.rev-card__name { font-weight: 600; }
+.rev-card__location { color: var(--rev-muted); text-transform: capitalize; }
+.rev-card__location::before { content: '\00B7'; margin-right: 6px; }
 
 /* ---- arrows --------------------------------------------------------- */
 .rev-cards__arrow {
@@ -417,11 +456,10 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 0;
-  border-radius: 50%;
+  border: 1px solid var(--rev-line);
+  border-radius: 2px;
   background: var(--rev-card-bg);
   color: var(--rev-text);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .14);
   cursor: pointer;
 }
 
@@ -467,7 +505,7 @@
     function step() {
       var card = track.querySelector('.rev-card');
       if (!card) return track.clientWidth;
-      return card.getBoundingClientRect().width + 22;
+      return card.getBoundingClientRect().width + 20;
     }
 
     function sync() {
@@ -560,7 +598,7 @@
     {
       "type": "checkbox",
       "id": "show_heart",
-      "label": "Show heart icon on cards",
+      "label": "Show quote mark on cards",
       "default": true
     },
     {
@@ -590,6 +628,13 @@
       "id": "color_stars",
       "label": "Stars",
       "default": "#3b2f26"
+    },
+    {
+      "type": "color",
+      "id": "color_accent",
+      "label": "Accent",
+      "info": "Score, top edge of the cards and the quote mark.",
+      "default": "#b07a52"
     }
   ],
   "blocks": [
@@ -610,12 +655,6 @@
           "type": "text",
           "id": "location",
           "label": "Location"
-        },
-        {
-          "type": "image_picker",
-          "id": "avatar",
-          "label": "Photo",
-          "info": "Only with the customer's permission. Leave empty to show their initial instead."
         },
         {
           "type": "select",
