@@ -207,20 +207,20 @@
   overflow: hidden;
 }
 
-/* ---- heading: title left, score right ------------------------------ */
+/* ---- heading: title centred, score underneath ---------------------- */
 .rev-cards__head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px 40px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
   padding-bottom: 22px;
   border-bottom: 1px solid var(--rev-line);
 }
 
 .rev-cards__title {
   margin: 0;
-  max-width: 16ch;
+  max-width: 22ch;
   font-size: clamp(26px, 3.4vw, 38px);
   line-height: 1.1;
   letter-spacing: -.01em;
@@ -243,7 +243,9 @@
 .rev-cards__score-meta {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 6px;
+  text-align: left;
 }
 
 .rev-cards__trust {
@@ -255,7 +257,6 @@
 
 @media (max-width: 749px) {
   .rev-cards { padding: 44px 0 48px; }
-  .rev-cards__head { align-items: flex-start; flex-direction: column; }
   .rev-cards__score { font-size: 42px; }
 }
 
