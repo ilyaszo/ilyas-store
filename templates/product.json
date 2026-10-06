@@ -563,7 +563,7 @@
         "question_7tHrtU": {
           "type": "question",
           "settings": {
-            "title": "What happens if i change my mind",
+            "title": "What happens if i change my mind?",
             "text": "<p>Don't worry! We offer a 30-day money-back guarantee so you can return your order hassle-free.</p>"
           }
         },
@@ -571,14 +571,14 @@
           "type": "question",
           "settings": {
             "title": "How can I track my order?",
-            "text": "<p>You’ll receive an order confirmation email shortly after placing your order. When your order is dispatched you will receive a tracking code.<br/><br/>If you don’t see it, please check your spam or junk folder.<br/><br/>Still can’t find it? Contact our customer support with your name and order number.</p>"
+            "text": "<p>You'll receive an order confirmation by email shortly after placing your order. Once it's dispatched, we'll send you a tracking code — and you can follow your parcel right here on our site through the&nbsp;<strong>Track Your Order</strong>&nbsp;page.</p><p>If you don't see either email, have a quick look in your spam or junk folder.</p><p>Still can't find it? Email us at&nbsp;<a href=\"mailto:info@clarasydney.com\">info@clarasydney.com</a>&nbsp;with your name and order number and we'll look it up for you.</p>"
           }
         },
         "question_DFepkp": {
           "type": "question",
           "settings": {
-            "title": "Need help with your order",
-            "text": "<p>Our customer service team is always here for you! If you have any questions or requests, please contact us at support@palm-beachboutique.com</p>"
+            "title": "Need help with your order?",
+            "text": "<p>Whatever's come up — a question before you buy, a size that isn't right, or something that's gone wrong with a delivery — email us at <a href=\"mailto:info@clarasydney.com\"><strong>info@clarasydney.com</strong></a> and we'll sort it out.</p><p>We're a small team, which means your message reaches a real person rather than a ticket queue. Every email gets an answer, usually within one business day.</p>"
           }
         }
       },
@@ -589,7 +589,6 @@
         "question_jPKngJ",
         "question_DFepkp"
       ],
-      "disabled": true,
       "name": "t:sections.faq.presets.faq.name",
       "settings": {
         "title": "FAQ"
