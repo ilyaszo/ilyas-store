@@ -103,7 +103,7 @@
         "custom_roxy_bundle": {
           "type": "custom",
           "settings": {
-            "code": "{% render 'roxy-bundle', product: product, tiers: '1:0,2:10,3:15', popular: 2 %}"
+            "code": "{% render 'roxy-bundle', product: product, tiers: '1:0,2:1,3:2', popular: 2 %}"
           }
         },
         "buy_buttons": {
