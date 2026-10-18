@@ -2,14 +2,14 @@
   Bundle & Save picker for the Roxy tanktop template.
   Rendered from a custom block in templates/product.roxy-tanktop.json only.
 
-  Each tier is "quantity:discount percent" and must match an active automatic
-  discount in Shopify (Discounts admin), otherwise the shown price differs from
-  checkout. Current store discounts: 2 items = 10%, 3 = 15%, 4 = 20%.
+  Each tier is "buy:free". Every tier except 1:0 needs a matching automatic
+  "Buy X get Y" discount in Shopify, otherwise the shown price differs from
+  checkout. Active: "Roxy tanktop - Buy 2 Get 1 Free" and "- Buy 3 Get 2 Free".
 
-  Usage: {% render 'roxy-bundle', product: product, tiers: '1:0,2:10,3:15', popular: 2 %}
+  Usage: {% render 'roxy-bundle', product: product, tiers: '1:0,2:1,3:2', popular: 2 %}
 {%- endcomment -%}
 {%- liquid
-  assign tiers = tiers | default: '1:0,2:10,3:15' | split: ','
+  assign tiers = tiers | default: '1:0,2:1,3:2' | split: ','
   assign popular = popular | default: 2
   assign color_index = -1
   for option in product.options_with_values
@@ -25,39 +25,38 @@
   {%- for tier in tiers -%}
     {%- liquid
       assign parts = tier | split: ':'
-      assign qty = parts[0] | strip | plus: 0
-      assign pct = parts[1] | strip | plus: 0
+      assign buy = parts[0] | strip | plus: 0
+      assign free = parts[1] | strip | plus: 0
     -%}
-    <label class="roxy-bundle__tier{% if forloop.first %} is-selected{% endif %}" data-qty="{{ qty }}" data-pct="{{ pct }}">
-      {%- if qty == popular -%}<span class="roxy-bundle__badge">Most popular</span>{%- endif -%}
+    <label class="roxy-bundle__tier{% if forloop.first %} is-selected{% endif %}" data-buy="{{ buy }}" data-free="{{ free }}">
+      {%- if buy == popular -%}<span class="roxy-bundle__badge">Most popular</span>{%- endif -%}
       <span class="roxy-bundle__head">
-        <input type="radio" name="roxy-bundle-tier" value="{{ qty }}" {% if forloop.first %}checked{% endif %}>
+        <input type="radio" name="roxy-bundle-tier" value="{{ buy }}" {% if forloop.first %}checked{% endif %}>
         <span class="roxy-bundle__label">
-          <strong>Buy {{ qty }}</strong>
-          <small>{% if pct > 0 %}Save {{ pct }}% + Free Shipping{% else %}+ Free Shipping{% endif %}</small>
+          <strong>Buy {{ buy }}{% if free > 0 %} Get {{ free }} Free{% endif %}</strong>
+          <small>{% if free > 0 %}You save <span data-save></span> + Free Shipping{% else %}+ Free Shipping{% endif %}</small>
         </span>
         <span class="roxy-bundle__prices">
           <strong data-price></strong>
-          {%- if pct > 0 -%}<s data-compare></s>{%- endif -%}
+          {%- if free > 0 -%}<s data-compare></s>{%- endif -%}
         </span>
       </span>
-      {%- if qty > 1 -%}
-        <span class="roxy-bundle__rows" data-rows></span>
-      {%- endif -%}
+      <span class="roxy-bundle__rows" data-rows></span>
     </label>
   {%- endfor -%}
-
   <p class="roxy-bundle__error" data-error hidden></p>
   <script type="application/json" data-product>{{ product | json }}</script>
   <script type="application/json" data-money-format>{{ shop.money_with_currency_format | json }}</script>
 </div>
 
 <style>
-  .roxy-bundle { --rb-accent: #2f9e5b; --rb-soft: #eef8f1; margin: 6px 0 4px; }
+  .roxy-bundle { --rb-accent: #2f9e5b; --rb-soft: #d9f2e1; margin: 6px 0 4px; }
   .roxy-bundle__title { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .roxy-bundle__title::before, .roxy-bundle__title::after { content: ''; flex: 1; height: 1px; background: #ddd; }
   .roxy-bundle__tier { position: relative; display: block; margin: 0 0 10px; padding: 14px 14px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; transition: border-color .15s, background .15s; }
-  .roxy-bundle__tier.is-selected { border: 2px solid var(--rb-accent); background: var(--rb-soft); padding: 13px; }
+  .roxy-bundle__tier.is-selected { border: 2px solid var(--rb-accent); background: var(--rb-soft); padding: 13px; box-shadow: 0 0 0 3px rgba(47,158,91,.15); }
+  .roxy-bundle__tier:not(.is-selected):hover { border-color: var(--rb-accent); }
+  .roxy-bundle__tier.is-selected .roxy-bundle__label small { color: #2a6e44; }
   .roxy-bundle__badge { position: absolute; top: -9px; right: 12px; padding: 2px 8px; border-radius: 3px; background: var(--rb-accent); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
   .roxy-bundle__head { display: flex; align-items: center; gap: 10px; }
   .roxy-bundle__head input { margin: 0; accent-color: var(--rb-accent); width: 16px; height: 16px; flex-shrink: 0; }
@@ -73,6 +72,7 @@
   .roxy-bundle__num { width: 22px; font-size: 12px; font-weight: 700; color: #666; }
   .roxy-bundle__thumb { width: 40px; height: 48px; object-fit: cover; border-radius: 4px; background: #f2f2f2; flex-shrink: 0; }
   .roxy-bundle__row select { flex: 1; min-width: 0; padding: 6px 24px 6px 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; }
+  .roxy-bundle__tier.is-selected .roxy-bundle__row select { border-color: #9fd3b2; }
   .roxy-bundle__error { margin: 0 0 10px; color: #c94a4a; font-size: 13px; }
 </style>
 
@@ -82,211 +82,228 @@
   if (!root) return;
   root.setAttribute('data-ready', '');
 
-  var product = JSON.parse(root.querySelector('[data-product]').textContent);
-  var moneyFormat = JSON.parse(root.querySelector('[data-money-format]').textContent);
-  var colorIndex = parseInt(root.dataset.colorIndex, 10);
-  var section = root.closest('[data-section-type="product"]') || document;
-  var form = section.querySelector('form.product-single__form');
-  var errorEl = root.querySelector('[data-error]');
-  var tiers = Array.prototype.slice.call(root.querySelectorAll('.roxy-bundle__tier'));
-  if (!form) return;
-
-  function formatMoney(cents) {
-    var amount = (cents / 100).toFixed(2);
-    var noDecimals = Math.round(cents / 100).toString();
-    return moneyFormat.replace(/\{\{\s*(\w+)\s*\}\}/, function (_, key) {
-      if (key === 'amount_no_decimals') return noDecimals.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      if (key === 'amount_with_comma_separator') return amount.replace('.', ',');
-      return amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    });
+  // The add-to-cart form is rendered after this block, so wait for the DOM.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
-  function currentVariant() {
-    var id = parseInt(form.querySelector('[name="id"]').value, 10);
-    return product.variants.filter(function (v) { return v.id === id; })[0] || product.variants[0];
-  }
+  function init() {
+    var product = JSON.parse(root.querySelector('[data-product]').textContent);
+    var moneyFormat = JSON.parse(root.querySelector('[data-money-format]').textContent);
+    var colorIndex = parseInt(root.dataset.colorIndex, 10);
+    var section = root.closest('[data-section-type="product"]') || document;
+    var form = section.querySelector('form.product-single__form');
+    var errorEl = root.querySelector('[data-error]');
+    var tiers = Array.prototype.slice.call(root.querySelectorAll('.roxy-bundle__tier'));
+    if (!form) return;
 
-  function findVariant(options) {
-    return product.variants.filter(function (v) {
-      return v.options.every(function (o, i) { return o === options[i]; });
-    })[0];
-  }
-
-  function variantImage(variant) {
-    var img = variant && variant.featured_image ? variant.featured_image.src : product.featured_image;
-    return img ? img + (img.indexOf('?') > -1 ? '&' : '?') + 'width=120' : '';
-  }
-
-  function buildRow(container, n, variant) {
-    var row = document.createElement('div');
-    row.className = 'roxy-bundle__row';
-    row.innerHTML = '<span class="roxy-bundle__num">#' + n + '</span><img class="roxy-bundle__thumb" alt="">';
-    product.options.forEach(function (name, i) {
-      var select = document.createElement('select');
-      select.setAttribute('aria-label', name + ' item ' + n);
-      select.dataset.index = i;
-      var values = [];
-      product.variants.forEach(function (v) { if (values.indexOf(v.options[i]) === -1) values.push(v.options[i]); });
-      values.forEach(function (value) {
-        var opt = document.createElement('option');
-        opt.value = value;
-        opt.textContent = value;
-        select.appendChild(opt);
+    function formatMoney(cents) {
+      var amount = (cents / 100).toFixed(2);
+      var noDecimals = Math.round(cents / 100).toString();
+      return moneyFormat.replace(/\{\{\s*(\w+)\s*\}\}/, function (_, key) {
+        if (key === 'amount_no_decimals') return noDecimals.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        if (key === 'amount_with_comma_separator') return amount.replace('.', ',');
+        return amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       });
-      select.value = variant.options[i];
-      row.appendChild(select);
-    });
-    row.addEventListener('change', function () {
-      row.dataset.touched = '';
+    }
+
+    function currentVariant() {
+      var id = parseInt(form.querySelector('[name="id"]').value, 10);
+      return product.variants.filter(function (v) { return v.id === id; })[0] || product.variants[0];
+    }
+
+    function findVariant(options) {
+      return product.variants.filter(function (v) {
+        return v.options.every(function (o, i) { return o === options[i]; });
+      })[0];
+    }
+
+    function variantImage(variant) {
+      var img = variant && variant.featured_image ? variant.featured_image.src : product.featured_image;
+      return img ? img + (img.indexOf('?') > -1 ? '&' : '?') + 'width=120' : '';
+    }
+
+    function buildRow(container, n, variant) {
+      var row = document.createElement('div');
+      row.className = 'roxy-bundle__row';
+      row.innerHTML = '<span class="roxy-bundle__num">#' + n + '</span><img class="roxy-bundle__thumb" alt="">';
+      product.options.forEach(function (name, i) {
+        var select = document.createElement('select');
+        select.setAttribute('aria-label', name + ' item ' + n);
+        select.dataset.index = i;
+        var values = [];
+        product.variants.forEach(function (v) { if (values.indexOf(v.options[i]) === -1) values.push(v.options[i]); });
+        values.forEach(function (value) {
+          var opt = document.createElement('option');
+          opt.value = value;
+          opt.textContent = value;
+          select.appendChild(opt);
+        });
+        select.value = variant.options[i];
+        row.appendChild(select);
+      });
+      row.addEventListener('change', function () {
+        row.dataset.touched = '';
+        syncRow(row);
+        updatePrices();
+      });
+      row.addEventListener('click', function (e) { e.stopPropagation(); });
+      container.appendChild(row);
       syncRow(row);
+    }
+
+    function rowOptions(row) {
+      return Array.prototype.map.call(row.querySelectorAll('select'), function (s) { return s.value; });
+    }
+
+    // Marks sold-out combinations and updates the thumbnail for the row's colour.
+    function syncRow(row) {
+      var options = rowOptions(row);
+      var selects = row.querySelectorAll('select');
+      selects.forEach(function (select, i) {
+        Array.prototype.forEach.call(select.options, function (opt) {
+          var test = options.slice();
+          test[i] = opt.value;
+          var v = findVariant(test);
+          var soldOut = !v || !v.available;
+          opt.textContent = opt.value + (soldOut ? ' (sold out)' : '');
+          opt.disabled = soldOut && i !== colorIndex;
+        });
+      });
+      var variant = findVariant(options);
+      row.dataset.variantId = variant ? variant.id : '';
+      row.querySelector('.roxy-bundle__thumb').src = variantImage(variant || currentVariant());
+    }
+
+    function setRowVariant(row, variant) {
+      row.querySelectorAll('select').forEach(function (select, i) { select.value = variant.options[i]; });
+      syncRow(row);
+    }
+
+    function selectedTier() {
+      return tiers.filter(function (t) { return t.classList.contains('is-selected'); })[0];
+    }
+
+    function rowVariants(tier) {
+      var rows = tier.querySelectorAll('.roxy-bundle__row');
+      return Array.prototype.map.call(rows, function (row) {
+        var id = parseInt(row.dataset.variantId, 10);
+        return product.variants.filter(function (v) { return v.id === id; })[0] || null;
+      });
+    }
+
+    function tierQty(tier) {
+      return parseInt(tier.dataset.buy, 10) + parseInt(tier.dataset.free, 10);
+    }
+
+    // Shopify gives the cheapest items in a "Buy X get Y" discount for free.
+    function updatePrices() {
+      tiers.forEach(function (tier) {
+        var qty = tierQty(tier);
+        var free = parseInt(tier.dataset.free, 10) || 0;
+        var variants = tier.classList.contains('is-selected') ? rowVariants(tier) : [];
+        var base = currentVariant();
+        var prices = [], compare = 0;
+        for (var i = 0; i < qty; i++) {
+          var v = variants[i] || base;
+          prices.push(v.price);
+          compare += Math.max(v.price, v.compare_at_price || 0);
+        }
+        prices.sort(function (a, b) { return a - b; });
+        var total = prices.slice(free).reduce(function (sum, p) { return sum + p; }, 0);
+        tier.querySelector('[data-price]').textContent = formatMoney(total);
+        var compareEl = tier.querySelector('[data-compare]');
+        if (compareEl) compareEl.textContent = formatMoney(compare);
+        var saveEl = tier.querySelector('[data-save]');
+        if (saveEl) saveEl.textContent = formatMoney(compare - total);
+      });
+    }
+
+    function selectTier(tier) {
+      tiers.forEach(function (t) {
+        t.classList.toggle('is-selected', t === tier);
+        t.querySelector('input').checked = t === tier;
+      });
+      var container = tier.querySelector('[data-rows]');
+      if (container && !container.children.length) {
+        var qty = tierQty(tier);
+        for (var i = 1; i <= qty; i++) buildRow(container, i, currentVariant());
+      }
+      errorEl.hidden = true;
+      updatePrices();
+    }
+
+    tiers.forEach(function (tier) {
+      tier.addEventListener('click', function () { selectTier(tier); });
+    });
+    selectTier(tiers[0]);
+
+    // Keep untouched rows in step with the main colour/size picker.
+    document.addEventListener('variant:change', function (e) {
+      var variant = e.detail && e.detail.variant;
+      if (variant) {
+        root.querySelectorAll('.roxy-bundle__row:not([data-touched])').forEach(function (row) {
+          setRowVariant(row, variant);
+        });
+      }
       updatePrices();
     });
-    row.addEventListener('click', function (e) { e.stopPropagation(); });
-    container.appendChild(row);
-    syncRow(row);
-  }
 
-  function rowOptions(row) {
-    return Array.prototype.map.call(row.querySelectorAll('select'), function (s) { return s.value; });
-  }
+    form.addEventListener('submit', function (e) {
+      var tier = selectedTier();
+      if (!tier) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
 
-  // Marks sold-out combinations and updates the thumbnail for the row's colour.
-  function syncRow(row) {
-    var options = rowOptions(row);
-    var selects = row.querySelectorAll('select');
-    selects.forEach(function (select, i) {
-      Array.prototype.forEach.call(select.options, function (opt) {
-        var test = options.slice();
-        test[i] = opt.value;
-        var v = findVariant(test);
-        var soldOut = !v || !v.available;
-        opt.textContent = opt.value + (soldOut ? ' (sold out)' : '');
-        opt.disabled = soldOut && i !== colorIndex;
-      });
-    });
-    var variant = findVariant(options);
-    row.dataset.variantId = variant ? variant.id : '';
-    row.querySelector('.roxy-bundle__thumb').src = variantImage(variant || currentVariant());
-  }
-
-  function setRowVariant(row, variant) {
-    row.querySelectorAll('select').forEach(function (select, i) { select.value = variant.options[i]; });
-    syncRow(row);
-  }
-
-  function selectedTier() {
-    return tiers.filter(function (t) { return t.classList.contains('is-selected'); })[0];
-  }
-
-  function rowVariants(tier) {
-    var rows = tier.querySelectorAll('.roxy-bundle__row');
-    if (!rows.length) return [currentVariant()];
-    return Array.prototype.map.call(rows, function (row) {
-      var id = parseInt(row.dataset.variantId, 10);
-      return product.variants.filter(function (v) { return v.id === id; })[0] || null;
-    });
-  }
-
-  function updatePrices() {
-    tiers.forEach(function (tier) {
-      var qty = parseInt(tier.dataset.qty, 10);
-      var pct = parseFloat(tier.dataset.pct) || 0;
-      var variants = tier.classList.contains('is-selected') && qty > 1 ? rowVariants(tier) : null;
-      var base = currentVariant();
-      var subtotal = 0, compare = 0;
-      for (var i = 0; i < qty; i++) {
-        var v = (variants && variants[i]) || base;
-        subtotal += v.price;
-        compare += Math.max(v.price, v.compare_at_price || 0);
-      }
-      var total = subtotal - Math.round(subtotal * pct / 100);
-      tier.querySelector('[data-price]').textContent = formatMoney(total);
-      var compareEl = tier.querySelector('[data-compare]');
-      if (compareEl) compareEl.textContent = formatMoney(compare);
-    });
-  }
-
-  function selectTier(tier) {
-    tiers.forEach(function (t) {
-      t.classList.toggle('is-selected', t === tier);
-      t.querySelector('input').checked = t === tier;
-    });
-    var container = tier.querySelector('[data-rows]');
-    if (container && !container.children.length) {
-      var qty = parseInt(tier.dataset.qty, 10);
-      for (var i = 1; i <= qty; i++) buildRow(container, i, currentVariant());
-    }
-    errorEl.hidden = true;
-    updatePrices();
-  }
-
-  tiers.forEach(function (tier) {
-    tier.addEventListener('click', function () { selectTier(tier); });
-  });
-
-  // Keep untouched rows in step with the main colour/size picker.
-  section.addEventListener('variantChange', function (e) {
-    var variant = e.detail && e.detail.variant;
-    if (variant) {
-      root.querySelectorAll('.roxy-bundle__row:not([data-touched])').forEach(function (row) {
-        setRowVariant(row, variant);
-      });
-    }
-    updatePrices();
-  });
-
-  form.addEventListener('submit', function (e) {
-    var tier = selectedTier();
-    if (!tier || parseInt(tier.dataset.qty, 10) < 2) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    var variants = rowVariants(tier);
-    var missing = variants.some(function (v) { return !v || !v.available; });
-    if (missing) {
-      errorEl.textContent = 'One of the selected combinations is sold out. Please pick another colour or size.';
-      errorEl.hidden = false;
-      return;
-    }
-
-    var counts = {};
-    variants.forEach(function (v) { counts[v.id] = (counts[v.id] || 0) + 1; });
-    var items = Object.keys(counts).map(function (id) { return { id: parseInt(id, 10), quantity: counts[id] }; });
-
-    var button = form.querySelector('[data-add-to-cart]');
-    if (button) button.classList.add('btn--loading');
-    errorEl.hidden = true;
-
-    fetch(theme.routes.cartAdd, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-      body: JSON.stringify({ items: items })
-    })
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (button) button.classList.remove('btn--loading');
-        if (data.status) {
-          errorEl.textContent = data.description || data.message || 'Could not add to cart.';
-          errorEl.hidden = false;
-          return;
-        }
-        if (theme.settings.cartType === 'drawer') {
-          form.dispatchEvent(new CustomEvent('ajaxProduct:added', {
-            detail: { product: data.items ? data.items[0] : data, addToCartBtn: button },
-            bubbles: true
-          }));
-        } else {
-          window.location.href = theme.routes.cartPage;
-        }
-      })
-      .catch(function () {
-        if (button) button.classList.remove('btn--loading');
-        errorEl.textContent = 'Could not add to cart. Please try again.';
+      var variants = rowVariants(tier);
+      var missing = variants.some(function (v) { return !v || !v.available; });
+      if (missing) {
+        errorEl.textContent = 'One of the selected combinations is sold out. Please pick another colour or size.';
         errorEl.hidden = false;
-      });
-  }, true);
+        return;
+      }
 
-  updatePrices();
+      var counts = {};
+      variants.forEach(function (v) { counts[v.id] = (counts[v.id] || 0) + 1; });
+      var items = Object.keys(counts).map(function (id) { return { id: parseInt(id, 10), quantity: counts[id] }; });
+
+      var button = form.querySelector('[data-add-to-cart]');
+      if (button) button.classList.add('btn--loading');
+      errorEl.hidden = true;
+
+      fetch(theme.routes.cartAdd, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify({ items: items })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (button) button.classList.remove('btn--loading');
+          if (data.status) {
+            errorEl.textContent = data.description || data.message || 'Could not add to cart.';
+            errorEl.hidden = false;
+            return;
+          }
+          if (theme.settings.cartType === 'drawer') {
+            form.dispatchEvent(new CustomEvent('ajaxProduct:added', {
+              detail: { product: data.items ? data.items[0] : data, addToCartBtn: button },
+              bubbles: true
+            }));
+          } else {
+            window.location.href = theme.routes.cartPage;
+          }
+        })
+        .catch(function () {
+          if (button) button.classList.remove('btn--loading');
+          errorEl.textContent = 'Could not add to cart. Please try again.';
+          errorEl.hidden = false;
+        });
+    }, true);
+
+    updatePrices();
+  }
 })();
 </script>
