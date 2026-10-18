@@ -100,6 +100,12 @@
             "code": "<script>\n      function randomInt(min, max) {\n         min = Math.ceil(min);\n         max = Math.floor(max);\n         return Math.floor(Math.random() * (max - min)) + min;\n      }\n    setInterval(function(){\n      $('.getviditors').text(randomInt(40,70))\n    },10000)\n     $('.getviditors').text(randomInt(40,70))\n   </script>\n<i>\n<img src=\"https://cdn.shopify.com/s/files/1/0656/0992/4856/files/eyeslittle2.svg?v=1663074357\" alt=\"Bekijkers\">\n\n<span \nclass=\"getviditors\">41</span>\nmensen bekijken nu dit product\n</i>\n<style>\nimg {\n  float: left;\n  margin-top: -4px;\n  margin-right: 2px;\n}\n</style>\n<br>\n<script>\n      function randomInt(min, max) {\n         min = Math.ceil(min);\n         max = Math.floor(max);\n         return Math.floor(Math.random() * (max - min)) + min;\n      }\n    setInterval(function(){\n      $('.getviditors1').text(randomInt(2,6))\n    },100000)\n     $('.getviditors1').text(randomInt(2,4))\n   </script>\n<i>\n\n<span style=\"color:orange\"\nclass=\"getviditors1\">5</span>\nstuks beschikbaar!\n</i>\n<style>\nimg {\n  float: left;\n  margin-top: -4px;\n  margin-right: 2px;\n}\n</style>"
           }
         },
+        "custom_roxy_bundle": {
+          "type": "custom",
+          "settings": {
+            "code": "{% render 'roxy-bundle', product: product, tiers: '1:0,2:10,3:15', popular: 2 %}"
+          }
+        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
@@ -193,6 +199,7 @@
         "8a3e0ff0-088b-41d3-9b3e-68853e349f7d",
         "a6a2ff0e-9306-4d78-a007-8022f4133abe",
         "9b703068-bdd0-4bfc-a732-e36be21f2ceb",
+        "custom_roxy_bundle",
         "buy_buttons",
         "custom_tUi9j7",
         "custom_GiyAhA",
