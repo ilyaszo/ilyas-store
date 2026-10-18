@@ -50,11 +50,11 @@
 </div>
 
 <style>
-  .roxy-bundle { --rb-accent: #2f9e5b; --rb-soft: #d9f2e1; margin: 6px 0 4px; }
+  .roxy-bundle { --rb-accent: #2f9e5b; --rb-soft: #e3f4e8; margin: 6px 0 4px; }
   .roxy-bundle__title { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .roxy-bundle__title::before, .roxy-bundle__title::after { content: ''; flex: 1; height: 1px; background: #ddd; }
-  .roxy-bundle__tier { position: relative; display: block; margin: 0 0 10px; padding: 14px 14px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; transition: border-color .15s, background .15s; }
-  .roxy-bundle__tier.is-selected { border: 2px solid var(--rb-accent); background: var(--rb-soft); padding: 13px; box-shadow: 0 0 0 3px rgba(47,158,91,.15); }
+  .roxy-bundle__tier { position: relative; display: block; overflow: visible; background-clip: padding-box; margin: 0 0 10px; padding: 14px 14px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; transition: border-color .15s, background .15s; }
+  .roxy-bundle__tier.is-selected { border: 2px solid var(--rb-accent); background: var(--rb-soft); padding: 13px; }
   .roxy-bundle__tier:not(.is-selected):hover { border-color: var(--rb-accent); }
   .roxy-bundle__tier.is-selected .roxy-bundle__label small { color: #2a6e44; }
   .roxy-bundle__badge { position: absolute; top: -9px; right: 12px; padding: 2px 8px; border-radius: 3px; background: var(--rb-accent); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
