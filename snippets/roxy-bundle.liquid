@@ -2,15 +2,15 @@
   Bundle & Save picker for the Roxy tanktop template.
   Rendered from a custom block in templates/product.roxy-tanktop.json only.
 
-  Each tier is "buy:free". Every tier except 1:0 needs a matching automatic
-  "Buy X get Y" discount in Shopify, otherwise the shown price differs from
-  checkout. Active: "Roxy tanktop - Buy 2 Get 1 Free" and "- Buy 3 Get 2 Free".
+  Tiers are "buy:free" and live here, not in the template. Every tier except
+  1:0 needs a matching automatic "Buy X get Y" discount in Shopify, otherwise
+  the shown price differs from checkout. Active: "Roxy tanktop - Buy 2 Get 1 Free" and "- Buy 3 Get 2 Free".
 
-  Usage: {% render 'roxy-bundle', product: product, tiers: '1:0,2:1,3:2', popular: 2 %}
+  Usage: {% render 'roxy-bundle', product: product %}
 {%- endcomment -%}
 {%- liquid
-  assign tiers = tiers | default: '1:0,2:1,3:2' | split: ','
-  assign popular = popular | default: 2
+  assign tiers = '1:0,2:1,3:2' | split: ','
+  assign popular = 2
   assign color_index = -1
   for option in product.options_with_values
     assign option_name = option.name | downcase
