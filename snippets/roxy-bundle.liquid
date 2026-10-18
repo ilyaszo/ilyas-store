@@ -27,6 +27,7 @@
       assign parts = tier | split: ':'
       assign buy = parts[0] | strip | plus: 0
       assign free = parts[1] | strip | plus: 0
+      assign tier_qty = buy | plus: free
     -%}
     <label class="roxy-bundle__tier{% if forloop.first %} is-selected{% endif %}" data-buy="{{ buy }}" data-free="{{ free }}">
       {%- if buy == popular -%}<span class="roxy-bundle__badge">Most popular</span>{%- endif -%}
@@ -34,7 +35,15 @@
         <input type="radio" name="roxy-bundle-tier" value="{{ buy }}" {% if forloop.first %}checked{% endif %}>
         <span class="roxy-bundle__label">
           <strong>Buy {{ buy }}{% if free > 0 %} Get {{ free }} Free{% endif %}</strong>
-          <small>{% if free > 0 %}You save <span data-save></span> + Free Shipping{% else %}+ Free Shipping{% endif %}</small>
+          <small>
+            {%- if free > 0 and forloop.last -%}
+              Includes {{ tier_qty }} tanks + Free Shipping
+            {%- elsif free > 0 -%}
+              Save {{ free | times: 100 | divided_by: tier_qty }}% + Free Shipping
+            {%- else -%}
+              + Free Shipping
+            {%- endif -%}
+          </small>
         </span>
         <span class="roxy-bundle__prices">
           <strong data-price></strong>
@@ -216,8 +225,6 @@
         tier.querySelector('[data-price]').textContent = formatMoney(total);
         var compareEl = tier.querySelector('[data-compare]');
         if (compareEl) compareEl.textContent = formatMoney(compare);
-        var saveEl = tier.querySelector('[data-save]');
-        if (saveEl) saveEl.textContent = formatMoney(compare - total);
       });
     }
 
