@@ -59,30 +59,38 @@
 </div>
 
 <style>
-  .roxy-bundle { --rb-accent: #2f9e5b; --rb-soft: #e3f4e8; margin: 6px 0 4px; }
+  .roxy-bundle {
+    --rb-accent: {{ settings.color_button }};
+    --rb-accent-text: {{ settings.color_button_text }};
+    --rb-soft: {{ settings.color_announcement }};
+    --rb-border: {{ settings.color_borders }};
+    --rb-price: {{ settings.color_price }};
+    --rb-savings: {{ settings.color_savings_text }};
+    margin: 6px 0 4px;
+  }
   .roxy-bundle__title { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-  .roxy-bundle__title::before, .roxy-bundle__title::after { content: ''; flex: 1; height: 1px; background: #ddd; }
-  .roxy-bundle__tier { position: relative; display: block; overflow: visible; background-clip: padding-box; margin: 0 0 10px; padding: 14px 14px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; transition: border-color .15s, background .15s; }
+  .roxy-bundle__title::before, .roxy-bundle__title::after { content: ''; flex: 1; height: 1px; background: var(--rb-border); }
+  .roxy-bundle__tier { position: relative; display: block; overflow: visible; background-clip: padding-box; margin: 0 0 10px; padding: 14px 14px; border: 1px solid var(--rb-border); border-radius: 8px; background: {{ settings.color_body_bg }}; cursor: pointer; transition: border-color .15s, background .15s; }
   .roxy-bundle__tier.is-selected { border: 2px solid var(--rb-accent); background: var(--rb-soft); padding: 13px; }
   .roxy-bundle__tier:not(.is-selected):hover { border-color: var(--rb-accent); }
-  .roxy-bundle__tier.is-selected .roxy-bundle__label small { color: #2a6e44; }
-  .roxy-bundle__badge { position: absolute; top: -9px; right: 12px; padding: 2px 8px; border-radius: 3px; background: var(--rb-accent); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+  .roxy-bundle__tier.is-selected .roxy-bundle__label small { color: var(--rb-savings); }
+  .roxy-bundle__badge { position: absolute; top: -9px; right: 12px; padding: 2px 8px; border-radius: 3px; background: var(--rb-accent); color: var(--rb-accent-text); font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
   .roxy-bundle__head { display: flex; align-items: center; gap: 10px; }
   .roxy-bundle__head input { margin: 0; accent-color: var(--rb-accent); width: 16px; height: 16px; flex-shrink: 0; }
   .roxy-bundle__label { display: flex; flex-direction: column; flex: 1; line-height: 1.3; }
   .roxy-bundle__label strong { font-size: 15px; }
   .roxy-bundle__label small { font-size: 12px; color: #666; }
   .roxy-bundle__prices { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.3; }
-  .roxy-bundle__prices strong { font-size: 15px; }
+  .roxy-bundle__prices strong { font-size: 15px; color: var(--rb-price); }
   .roxy-bundle__prices s { font-size: 12px; color: #999; }
   .roxy-bundle__rows { display: none; margin-top: 12px; }
   .roxy-bundle__tier.is-selected .roxy-bundle__rows { display: block; }
   .roxy-bundle__row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
   .roxy-bundle__num { width: 22px; font-size: 12px; font-weight: 700; color: #666; }
   .roxy-bundle__thumb { width: 40px; height: 48px; object-fit: cover; border-radius: 4px; background: #f2f2f2; flex-shrink: 0; }
-  .roxy-bundle__row select { flex: 1; min-width: 0; padding: 6px 24px 6px 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; }
-  .roxy-bundle__tier.is-selected .roxy-bundle__row select { border-color: #9fd3b2; }
-  .roxy-bundle__error { margin: 0 0 10px; color: #c94a4a; font-size: 13px; }
+  .roxy-bundle__row select { flex: 1; min-width: 0; padding: 6px 24px 6px 8px; font-size: 13px; border: 1px solid var(--rb-border); border-radius: 4px; background-color: {{ settings.color_body_bg }}; }
+  .roxy-bundle__tier.is-selected .roxy-bundle__row select { border-color: var(--rb-accent); }
+  .roxy-bundle__error { margin: 0 0 10px; color: var(--rb-savings); font-size: 13px; }
 </style>
 
 <script>
