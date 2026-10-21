@@ -37,7 +37,7 @@
           <strong>Buy {{ buy }}{% if free > 0 %} Get {{ free }} Free{% endif %}</strong>
           <small>
             {%- if free > 0 and forloop.last -%}
-              Best value — {{ free }} FREE + free shipping
+              Get {{ tier_qty }} pieces + free shipping
             {%- elsif free > 0 -%}
               Save {{ free | times: 100 | divided_by: tier_qty }}% + Free Shipping
             {%- else -%}
