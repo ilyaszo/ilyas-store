@@ -569,12 +569,19 @@ button[class*="kiwi"],
    PRODUCT: SIZE GUIDE NAAST HET MAATLABEL
 ================================ */
 
-/* Label "SIZE" en de size guide-link staan samen op één rij. */
+/* Label "SIZE" links, size guide-link rechts, op dezelfde hoogte. */
 .variant__label-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   margin-bottom: 10px;
+}
+
+/* Zelfde lettergrootte als het label (theme.css: label { font-size: 0.8em }). */
+.variant__size-chart-inline {
+  font-size: 0.8em;
+  line-height: inherit;
 }
 
 .variant__label-row .variant__label[for] {
@@ -591,8 +598,8 @@ button[class*="kiwi"],
 
 .variant__size-chart-inline .tool-tip-trigger__title {
   gap: 6px;
-  font-size: 13px;
-  line-height: 1.2;
+  font-size: inherit;
+  line-height: inherit;
   letter-spacing: 0;
   text-transform: none;
   color: #1a1a1a;
@@ -606,6 +613,11 @@ button[class*="kiwi"],
   margin: 0;
   flex: 0 0 auto;
   stroke-width: 6;
+}
+
+.variant__size-chart-inline .tool-tip-trigger .icon {
+  height: 1em;
+  width: 1em;
 }
 
 .size-chart__link-text {
