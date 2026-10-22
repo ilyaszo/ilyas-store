@@ -22,6 +22,7 @@
 -%}
 
 <div class="variant-wrapper js" data-type="button">
+  {%- if show_inline_size_chart -%}<div class="variant__label-row">{%- endif -%}
   <label class="variant__label{% if show_inline_size_chart %} variant__label--size-chart{% endif %}{% if option.name == 'Default' or option.name == 'Title' %} hidden-label{% endif %}{% unless variant_labels %} hidden-label{% endunless %}"
     for="ProductSelect-{{ section_id }}-{{ product.id }}-option-{{ forloop.index0 }}">
     <span class="variant__label-name">
@@ -39,6 +40,17 @@
       {%- endif -%}
     </span>
   </label>
+  {%- if show_inline_size_chart -%}
+    <div class="variant__size-chart-inline">
+      {%- render
+        'tool-tip-trigger',
+        title: size_chart_title,
+        content: section.blocks[sizechart_index].settings.size_chart.content,
+        context: 'size-chart'
+      -%}
+    </div>
+  </div>
+  {%- endif -%}
   {%- assign option_index = forloop.index -%}
   <fieldset class="variant-input-wrap"
     name="{{ option.name }}"
@@ -100,14 +112,4 @@
       </div>
     {%- endfor -%}
   </fieldset>
-  {%- if show_inline_size_chart -%}
-    <div class="variant__size-chart-below">
-      {%- render
-        'tool-tip-trigger',
-        title: size_chart_title,
-        content: section.blocks[sizechart_index].settings.size_chart.content,
-        context: 'size-chart'
-      -%}
-    </div>
-  {%- endif -%}
 </div>

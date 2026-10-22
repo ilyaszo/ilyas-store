@@ -566,31 +566,32 @@ button[class*="kiwi"],
 
 
 /* ================================
-   PRODUCT: SIZE GUIDE ONDER DE MAATKNOPPEN
+   PRODUCT: SIZE GUIDE NAAST HET MAATLABEL
 ================================ */
 
-/* Het maatlabel heeft de size chart niet meer inline staan, dus de rij
-   mag weer gewoon links uitlijnen. */
-.variant__label--size-chart[for] {
-  display: block;
+/* Label "SIZE" en de size guide-link staan samen op één rij. */
+.variant__label-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
 }
 
-/* De size guide-link staat onder de maatknoppen, links uitgelijnd. */
-.variant__size-chart-below {
-  margin: 10px 0 2px;
+.variant__label-row .variant__label[for] {
+  margin-bottom: 0;
 }
 
-.variant__size-chart-below .tool-tip-trigger,
-.variant__size-chart-below .tool-tip-trigger__title {
+.variant__size-chart-inline .tool-tip-trigger,
+.variant__size-chart-inline .tool-tip-trigger__title {
   display: inline-flex;
   align-items: center;
   padding: 0;
   text-align: left;
 }
 
-.variant__size-chart-below .tool-tip-trigger__title {
-  gap: 8px;
-  font-size: 14px;
+.variant__size-chart-inline .tool-tip-trigger__title {
+  gap: 6px;
+  font-size: 13px;
   line-height: 1.2;
   letter-spacing: 0;
   text-transform: none;
@@ -599,7 +600,7 @@ button[class*="kiwi"],
 
 /* Meetlat-icoon links van de tekst, alleen de tekst is onderlijnd. */
 .size-chart__standalone .tool-tip-trigger .icon,
-.variant__size-chart-below .tool-tip-trigger .icon {
+.variant__size-chart-inline .tool-tip-trigger .icon {
   height: 16px;
   width: 16px;
   margin: 0;
