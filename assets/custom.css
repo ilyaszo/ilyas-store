@@ -600,8 +600,8 @@ button[class*="kiwi"],
   gap: 6px;
   font-size: inherit;
   line-height: inherit;
-  letter-spacing: 0;
-  text-transform: none;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
   color: #1a1a1a;
 }
 
