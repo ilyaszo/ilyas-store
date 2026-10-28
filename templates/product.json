@@ -168,7 +168,7 @@
         "custom_kdMnFc": {
           "type": "custom",
           "settings": {
-            "code": "<style>\n  .trust-proof {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    font-size: 13px;\n    color: #4b4b4b;\n    line-height: 1.35;\n    margin: 10px 0;\n    max-width: 420px;\n  }\n  .trust-proof img {\n    width: 42px;\n    height: 42px;\n    border-radius: 999px;\n    object-fit: cover;\n    flex-shrink: 0;\n    display: block;\n  }\n  .trust-proof strong { font-weight: 600; }\n</style>\n\n<div class=\"trust-proof\">\n  <img\n    src=\"https://cdn.shopify.com/s/files/1/0920/3213/9593/files/Ontwerp_zonder_titel_-_2025-12-15T145817.255.png?v=1765807111\"\n    alt=\"Happy customer\"\n    loading=\"lazy\"\n  >\n  <div>\n    One of over <strong>63,000+</strong> customers across Australia who trust\n    <strong>Clara Sydney</strong>.\n  </div>\n</div>"
+            "code": "<style>\n  .trust-proof {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    font-size: 13px;\n    color: #4b4b4b;\n    line-height: 1.35;\n    margin: 10px 0;\n    max-width: 420px;\n  }\n  .trust-proof img {\n    width: 42px;\n    height: 42px;\n    border-radius: 999px;\n    object-fit: cover;\n    flex-shrink: 0;\n    display: block;\n  }\n  .trust-proof strong { font-weight: 600; }\n</style>\n\n<div class=\"trust-proof\">\n  <img\n    src=\"https://cdn.shopify.com/s/files/1/0920/3213/9593/files/Ontwerp_zonder_titel_-_2025-12-15T145817.255.png?v=1765807111\"\n    alt=\"Happy customer\"\n    loading=\"lazy\"\n  >\n  <div>\n    One of over <strong>746+</strong> customers across Australia who trust\n    <strong>Clara Sydney</strong>.\n  </div>\n</div>"
           }
         },
         "371c5405-64f7-443e-9e8e-42112a8b03ec": {
@@ -315,7 +315,8 @@
         "color_background": "#fdf4ec",
         "color_card": "#ffffff",
         "color_text": "#3b2f26",
-        "color_stars": "#3b2f26"
+        "color_stars": "#3b2f26",
+        "color_accent": "#b07a52"
       }
     },
     "testimonials_A6AWzA": {
