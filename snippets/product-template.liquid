@@ -245,14 +245,14 @@
                           </span>
                         </span>
 
-                      {%- comment -%} SAVE % OFF badge — % gelinkt aan prijsverschil, kleur aan announcement bar {%- endcomment -%}
+                      {%- comment -%} -% badge — % gelinkt aan prijsverschil, kleur aan announcement bar {%- endcomment -%}
                       {%- if current_variant.compare_at_price > current_variant.price -%}
                         {%- assign badge_compare = current_variant.compare_at_price -%}
                       {%- else -%}
                         {%- assign badge_compare = current_variant.price | times: 2 -%}
                       {%- endif -%}
                       {%- assign badge_save_percent = badge_compare | minus: current_variant.price | times: 100.0 | divided_by: badge_compare | round -%}
-                      <span class="product__save-badge" data-save-badge>SAVE {{ badge_save_percent }}% OFF</span>
+                      <span class="product__save-badge" data-save-badge>-{{ badge_save_percent }}%</span>
                       <script>
                         if (!window.__saveBadgeInit) {
                           window.__saveBadgeInit = true;
@@ -262,7 +262,7 @@
                             var compare = (v.compare_at_price && v.compare_at_price > v.price) ? v.compare_at_price : v.price * 2;
                             var pct = Math.round((compare - v.price) * 100 / compare);
                             document.querySelectorAll('[data-save-badge]').forEach(function(el) {
-                              el.textContent = 'SAVE ' + pct + '% OFF';
+                              el.textContent = '-' + pct + '%';
                             });
                           });
                         }
@@ -285,7 +285,6 @@
                         <span data-unit-price>{{ current_variant.unit_price | money }}</span>/{{ unit_price_base_unit }}
                       </div>
 
-                  <span class="badge" style="background: black; color: white; border-radius: 500px; padding: 5px 10px; font-weight: 700; font-size: 13px;">50% OFF</span>
 
                       {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
                         <div class="product__policies rte small--text-center">
